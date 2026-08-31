@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DeiraxFn Store - Admin</title>
+<title>Admin - FEN Project Store</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -22,9 +22,17 @@ body{
 }
 
 header{
-  padding:20px;
   background:#101218;
   border-bottom:1px solid #252832;
+  padding:18px 20px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.nav{
+  max-width:1000px;
+  margin:auto;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -39,51 +47,52 @@ header{
   color:#ff2f92;
 }
 
-button{
+.logout{
+  background:#292e39;
+  color:white;
   border:0;
+  padding:10px 15px;
+  border-radius:8px;
   cursor:pointer;
 }
 
-.logout{
-  background:#252832;
-  color:white;
-  padding:10px 15px;
-  border-radius:8px;
-}
-
 .container{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
   padding:25px 18px;
 }
 
-.login,
-.admin-panel{
-  max-width:600px;
-  margin:40px auto;
+.panel{
   background:#11141c;
   border:1px solid #252832;
   border-radius:18px;
   padding:25px;
+  margin-bottom:25px;
 }
 
 h1{
   margin-bottom:8px;
 }
 
-.sub{
+h2{
+  margin-bottom:18px;
+}
+
+.subtitle{
   color:#8f95a3;
-  margin-bottom:25px;
+  line-height:1.5;
+  margin-bottom:20px;
 }
 
 label{
   display:block;
-  margin:16px 0 7px;
+  margin:17px 0 7px;
   color:#d5d8df;
 }
 
 input,
-textarea{
+textarea,
+select{
   width:100%;
   padding:13px;
   background:#090b10;
@@ -91,137 +100,180 @@ textarea{
   color:white;
   border-radius:9px;
   outline:none;
+  font-size:15px;
 }
 
-textarea{
-  min-height:100px;
-  resize:vertical;
+select{
+  cursor:pointer;
 }
 
 input:focus,
-textarea:focus{
+textarea:focus,
+select:focus{
   border-color:#ff2f92;
 }
 
-.main-btn{
-  width:100%;
-  padding:14px;
-  margin-top:20px;
-  border-radius:10px;
-  background:#ff2f92;
-  color:white;
-  font-weight:bold;
-}
-
-.main-btn:hover{
-  opacity:.9;
+textarea{
+  min-height:110px;
+  resize:vertical;
 }
 
 .preview{
   width:100%;
   max-height:300px;
   object-fit:contain;
-  background:#08090d;
+  background:#090b10;
   border-radius:12px;
   margin-top:12px;
   display:none;
 }
 
+.main-btn{
+  width:100%;
+  padding:14px;
+  margin-top:20px;
+  border:0;
+  border-radius:10px;
+  background:#ff2f92;
+  color:white;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.main-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.cancel-btn{
+  width:100%;
+  padding:13px;
+  margin-top:9px;
+  border:0;
+  border-radius:10px;
+  background:#292e39;
+  color:white;
+  cursor:pointer;
+}
+
 .status{
+  display:none;
   margin-top:15px;
   padding:12px;
   border-radius:9px;
   background:#191c24;
-  color:#bbb;
-  display:none;
+  color:#ddd;
+  line-height:1.5;
 }
 
 .products{
-  margin-top:30px;
+  display:grid;
+  gap:12px;
 }
 
 .product{
-  display:flex;
-  gap:15px;
   background:#11141c;
   border:1px solid #252832;
-  padding:15px;
   border-radius:14px;
-  margin-bottom:12px;
+  padding:14px;
+  display:flex;
+  gap:15px;
   align-items:center;
 }
 
-.product img{
+.product-image{
   width:90px;
   height:90px;
   object-fit:cover;
   border-radius:10px;
-  background:#08090d;
+  background:#090b10;
+  flex-shrink:0;
 }
 
 .product-info{
   flex:1;
+  min-width:0;
 }
 
-.product-info h3{
+.product-name{
+  font-size:17px;
+  font-weight:bold;
+  margin-bottom:7px;
+  word-break:break-word;
+}
+
+.product-category{
+  display:inline-block;
+  background:#292e39;
+  color:#bbb;
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
   margin-bottom:7px;
 }
 
-.price{
+.product-price{
   color:#ff2f92;
   font-weight:bold;
 }
 
 .actions{
   display:flex;
-  gap:7px;
+  gap:8px;
   margin-top:10px;
+  flex-wrap:wrap;
 }
 
-.edit{
+.edit-btn{
+  border:0;
   background:#292e39;
   color:white;
-  padding:8px 12px;
+  padding:8px 13px;
   border-radius:7px;
+  cursor:pointer;
 }
 
-.delete{
+.delete-btn{
+  border:0;
   background:#c62828;
   color:white;
-  padding:8px 12px;
+  padding:8px 13px;
   border-radius:7px;
+  cursor:pointer;
+}
+
+.login-box{
+  max-width:500px;
+  margin:60px auto;
 }
 
 .hidden{
-  display:none;
+  display:none !important;
 }
 
-.cancel{
-  background:#292e39;
-  color:white;
-  width:100%;
-  padding:13px;
-  margin-top:8px;
-  border-radius:10px;
+.empty{
+  text-align:center;
+  padding:40px;
+  color:#777;
+  background:#11141c;
+  border:1px solid #252832;
+  border-radius:14px;
 }
 
 @media(max-width:600px){
-
-  header{
-    padding:15px;
-  }
 
   .product{
     align-items:flex-start;
   }
 
-  .product img{
+  .product-image{
     width:75px;
     height:75px;
   }
 
-  .actions{
-    flex-wrap:wrap;
+  .product-name{
+    font-size:15px;
   }
 
 }
@@ -232,70 +284,95 @@ textarea:focus{
 
 <header>
 
-  <div class="logo">
-    Deiraxfn <span>Store</span>
-  </div>
+  <div class="nav">
 
-  <button
-    class="logout hidden"
-    id="logoutBtn"
-    onclick="logout()">
-    Logout
-  </button>
+    <div class="logo">
+      FEN <span>PROJECT</span>
+    </div>
+
+    <button
+      id="logoutBtn"
+      class="logout hidden"
+      onclick="logout()">
+      Logout
+    </button>
+
+  </div>
 
 </header>
 
 
-<!-- LOGIN -->
+<!-- =========================
+     LOGIN
+========================= -->
 
-<section id="loginSection" class="login">
+<section
+  id="loginSection"
+  class="container">
 
-  <h1>Admin Login</h1>
+  <div class="panel login-box">
 
-  <p class="sub">
-    Login untuk mengelola produk DeiraxFn.
-  </p>
+    <h1>Admin Login</h1>
 
-  <label>Email</label>
+    <p class="subtitle">
+      Login untuk mengelola produk FEN Project Store.
+    </p>
 
-  <input
-    type="email"
-    id="email"
-    placeholder="Email admin">
+    <label>Email</label>
 
-  <label>Password</label>
+    <input
+      type="email"
+      id="email"
+      placeholder="Email admin">
 
-  <input
-    type="password"
-    id="password"
-    placeholder="Password">
 
-  <button
-    class="main-btn"
-    onclick="login()">
-    LOGIN
-  </button>
+    <label>Password</label>
 
-  <div id="loginStatus" class="status"></div>
+    <input
+      type="password"
+      id="password"
+      placeholder="Password">
+
+
+    <button
+      class="main-btn"
+      onclick="login()">
+
+      LOGIN
+
+    </button>
+
+
+    <div
+      id="loginStatus"
+      class="status">
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- ADMIN -->
+<!-- =========================
+     ADMIN
+========================= -->
 
 <section
   id="adminSection"
   class="container hidden">
 
-  <div class="admin-panel">
+
+  <!-- FORM -->
+
+  <div class="panel">
 
     <h1 id="formTitle">
       Tambah Produk
     </h1>
 
-    <p class="sub">
-      Produk yang disimpan akan otomatis masuk
-      ke katalog.
+    <p class="subtitle">
+      Produk yang disimpan di sini akan otomatis
+      muncul di website toko.
     </p>
 
 
@@ -304,7 +381,34 @@ textarea:focus{
     <input
       type="text"
       id="name"
-      placeholder="Contoh: FLM Ketaton Cerita Fullpack">
+      placeholder="Contoh: Pepujaning Ati FLM!! Fullpack Sample">
+
+
+    <label>Kategori</label>
+
+    <select id="category">
+
+      <option value="Project">
+        🎵 Project
+      </option>
+
+      <option value="Instrument">
+        🎹 Instrument
+      </option>
+
+      <option value="Sample Pack">
+        🎧 Sample Pack
+      </option>
+
+      <option value="Preset">
+        🔥 Preset
+      </option>
+
+      <option value="Fullpack">
+        📦 Fullpack
+      </option>
+
+    </select>
 
 
     <label>Harga</label>
@@ -312,14 +416,15 @@ textarea:focus{
     <input
       type="number"
       id="price"
-      placeholder="20000">
+      placeholder="20000"
+      min="0">
 
 
     <label>Deskripsi</label>
 
     <textarea
       id="description"
-      placeholder="Deskripsi produk..."></textarea>
+      placeholder="Tuliskan deskripsi produk..."></textarea>
 
 
     <label>Nomor WhatsApp</label>
@@ -328,7 +433,7 @@ textarea:focus{
       type="text"
       id="whatsapp"
       value="6285646470358"
-      placeholder="6285646470358">
+      placeholder="628xxxxxxxxxx">
 
 
     <label>Foto Produk</label>
@@ -339,24 +444,31 @@ textarea:focus{
       accept="image/*"
       onchange="previewImage()">
 
+
     <img
       id="imagePreview"
       class="preview">
 
 
     <button
+      id="saveBtn"
       class="main-btn"
-      onclick="saveProduct()"
-      id="saveBtn">
+      onclick="saveProduct()">
+
       SIMPAN PRODUK
+
     </button>
 
+
     <button
-      class="cancel hidden"
-      onclick="cancelEdit()"
-      id="cancelBtn">
+      id="cancelBtn"
+      class="cancel-btn hidden"
+      onclick="cancelEdit()">
+
       BATAL EDIT
+
     </button>
+
 
     <div
       id="saveStatus"
@@ -366,18 +478,20 @@ textarea:focus{
   </div>
 
 
-  <!-- DAFTAR PRODUK -->
+  <!-- PRODUCTS -->
 
-  <div class="products">
+  <div>
 
     <h2>
-      Produk Saya
+      📦 Produk Saya
     </h2>
 
-    <br>
+    <div
+      id="productList"
+      class="products">
 
-    <div id="productList">
       Memuat produk...
+
     </div>
 
   </div>
@@ -387,16 +501,15 @@ textarea:focus{
 
 <script>
 
-/* =================================
+/* =========================================
    SUPABASE
-================================= */
+========================================= */
 
 const SUPABASE_URL =
 "https://reptktnxppqeltvankgb.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_bFObi9r7_j3CRtnF6eIQBQ_vjlbg3FD";
-
 
 const supabaseClient =
 supabase.createClient(
@@ -405,28 +518,36 @@ supabase.createClient(
 );
 
 
-/* =================================
-   VARIABLE EDIT
-================================= */
+/* =========================================
+   VARIABLE
+========================================= */
 
 let editingId = null;
 let oldImagePath = null;
 
 
-/* =================================
+/* =========================================
    LOGIN
-================================= */
+========================================= */
 
 async function login(){
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
   const status =
-    document.getElementById("loginStatus");
+    document.getElementById(
+      "loginStatus"
+    );
+
 
   if(!email || !password){
 
@@ -436,7 +557,9 @@ async function login(){
     );
 
     return;
+
   }
+
 
   showStatus(
     status,
@@ -444,10 +567,17 @@ async function login(){
   );
 
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.auth
+    .signInWithPassword({
+
       email:email,
+
       password:password
+
     });
 
 
@@ -455,33 +585,58 @@ async function login(){
 
     showStatus(
       status,
-      "Login gagal: " + error.message
+      "Login gagal: " +
+      error.message
     );
 
     return;
+
   }
 
 
-  document
-    .getElementById("loginSection")
-    .classList.add("hidden");
+  showAdmin();
 
-  document
-    .getElementById("adminSection")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("logoutBtn")
-    .classList.remove("hidden");
-
-
-  loadProducts();
 }
 
 
-/* =================================
+/* =========================================
+   SHOW ADMIN
+========================================= */
+
+function showAdmin(){
+
+  document
+    .getElementById(
+      "loginSection"
+    )
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById(
+      "adminSection"
+    )
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById(
+      "logoutBtn"
+    )
+    .classList
+    .remove("hidden");
+
+
+  loadProducts();
+
+}
+
+
+/* =========================================
    LOGOUT
-================================= */
+========================================= */
 
 async function logout(){
 
@@ -492,9 +647,9 @@ async function logout(){
 }
 
 
-/* =================================
-   CEK LOGIN
-================================= */
+/* =========================================
+   CHECK USER
+========================================= */
 
 async function checkUser(){
 
@@ -503,24 +658,13 @@ async function checkUser(){
       user
     }
   } =
-  await supabaseClient.auth.getUser();
+  await supabaseClient.auth
+    .getUser();
 
 
   if(user){
 
-    document
-      .getElementById("loginSection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("adminSection")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("logoutBtn")
-      .classList.remove("hidden");
-
-    loadProducts();
+    showAdmin();
 
   }
 
@@ -529,25 +673,32 @@ async function checkUser(){
 checkUser();
 
 
-/* =================================
-   PREVIEW FOTO
-================================= */
+/* =========================================
+   PREVIEW IMAGE
+========================================= */
 
 function previewImage(){
 
   const file =
-    document.getElementById("imageFile")
+    document
+      .getElementById(
+        "imageFile"
+      )
       .files[0];
 
   const preview =
-    document.getElementById("imagePreview");
+    document.getElementById(
+      "imagePreview"
+    );
 
 
   if(!file){
 
-    preview.style.display = "none";
+    preview.style.display =
+      "none";
 
     return;
+
   }
 
 
@@ -560,9 +711,9 @@ function previewImage(){
 }
 
 
-/* =================================
-   UPLOAD FOTO
-================================= */
+/* =========================================
+   UPLOAD IMAGE
+========================================= */
 
 async function uploadImage(file){
 
@@ -590,24 +741,20 @@ async function uploadImage(file){
     extension;
 
 
-  const filePath =
-    fileName;
-
-
   const {
     error
   } =
-    await supabaseClient
-      .storage
-      .from("product-images")
-      .upload(
-        filePath,
-        file,
-        {
-          cacheControl:"3600",
-          upsert:false
-        }
-      );
+  await supabaseClient
+    .storage
+    .from("product-images")
+    .upload(
+      fileName,
+      file,
+      {
+        cacheControl:"3600",
+        upsert:false
+      }
+    );
 
 
   if(error){
@@ -620,52 +767,77 @@ async function uploadImage(file){
   const {
     data
   } =
-    supabaseClient
-      .storage
-      .from("product-images")
-      .getPublicUrl(filePath);
+  supabaseClient
+    .storage
+    .from("product-images")
+    .getPublicUrl(
+      fileName
+    );
 
 
   return {
     url:data.publicUrl,
-    path:filePath
+    path:fileName
   };
 
 }
 
 
-/* =================================
-   SIMPAN PRODUK
-================================= */
+/* =========================================
+   SAVE PRODUCT
+========================================= */
 
 async function saveProduct(){
 
   const name =
-    document.getElementById("name")
-      .value.trim();
+    document
+      .getElementById("name")
+      .value
+      .trim();
 
-  const price =
-    document.getElementById("price")
+
+  const category =
+    document
+      .getElementById("category")
       .value;
 
+
+  const price =
+    document
+      .getElementById("price")
+      .value;
+
+
   const description =
-    document.getElementById("description")
-      .value.trim();
+    document
+      .getElementById("description")
+      .value
+      .trim();
+
 
   const whatsapp =
-    document.getElementById("whatsapp")
-      .value.trim();
+    document
+      .getElementById("whatsapp")
+      .value
+      .trim();
+
 
   const file =
-    document.getElementById("imageFile")
+    document
+      .getElementById("imageFile")
       .files[0];
 
 
   const status =
-    document.getElementById("saveStatus");
+    document.getElementById(
+      "saveStatus"
+    );
+
 
   const button =
-    document.getElementById("saveBtn");
+    document.getElementById(
+      "saveBtn"
+    );
 
 
   if(!name){
@@ -684,7 +856,7 @@ async function saveProduct(){
 
     showStatus(
       status,
-      "Harga wajib diisi."
+      "Harga produk wajib diisi."
     );
 
     return;
@@ -692,7 +864,8 @@ async function saveProduct(){
   }
 
 
-  button.disabled = true;
+  button.disabled =
+    true;
 
   button.innerText =
     "MENYIMPAN...";
@@ -704,12 +877,16 @@ async function saveProduct(){
     let imagePath = null;
 
 
-    /* UPLOAD FOTO BARU */
+    /* =====================
+       UPLOAD GAMBAR
+    ===================== */
 
     if(file){
 
       const uploaded =
-        await uploadImage(file);
+        await uploadImage(
+          file
+        );
 
       imageUrl =
         uploaded.url;
@@ -720,13 +897,17 @@ async function saveProduct(){
     }
 
 
-    /* EDIT */
+    /* =====================
+       EDIT
+    ===================== */
 
     if(editingId){
 
       const updateData = {
 
         name:name,
+
+        category:category,
 
         price:Number(price),
 
@@ -750,8 +931,13 @@ async function saveProduct(){
       } =
       await supabaseClient
         .from("products")
-        .update(updateData)
-        .eq("id", editingId);
+        .update(
+          updateData
+        )
+        .eq(
+          "id",
+          editingId
+        );
 
 
       if(error){
@@ -761,13 +947,18 @@ async function saveProduct(){
       }
 
 
-      /* HAPUS FOTO LAMA */
+      /* DELETE OLD IMAGE */
 
-      if(imageUrl && oldImagePath){
+      if(
+        imageUrl &&
+        oldImagePath
+      ){
 
         await supabaseClient
           .storage
-          .from("product-images")
+          .from(
+            "product-images"
+          )
           .remove([
             oldImagePath
           ]);
@@ -783,7 +974,9 @@ async function saveProduct(){
     }
 
 
-    /* PRODUK BARU */
+    /* =====================
+       TAMBAH PRODUK
+    ===================== */
 
     else{
 
@@ -795,6 +988,8 @@ async function saveProduct(){
         .insert({
 
           name:name,
+
+          category:category,
 
           price:Number(price),
 
@@ -842,7 +1037,8 @@ async function saveProduct(){
   }
 
 
-  button.disabled = false;
+  button.disabled =
+    false;
 
   button.innerText =
     "SIMPAN PRODUK";
@@ -850,14 +1046,16 @@ async function saveProduct(){
 }
 
 
-/* =================================
-   LOAD PRODUK
-================================= */
+/* =========================================
+   LOAD PRODUCTS
+========================================= */
 
 async function loadProducts(){
 
   const list =
-    document.getElementById("productList");
+    document.getElementById(
+      "productList"
+    );
 
 
   list.innerHTML =
@@ -882,18 +1080,26 @@ async function loadProducts(){
   if(error){
 
     list.innerHTML =
-      "Gagal memuat: " +
-      error.message;
+      `<div class="empty">
+        ${escapeHTML(
+          error.message
+        )}
+      </div>`;
 
     return;
 
   }
 
 
-  if(!data || data.length === 0){
+  if(
+    !data ||
+    data.length === 0
+  ){
 
     list.innerHTML =
-      "Belum ada produk.";
+      `<div class="empty">
+        Belum ada produk.
+      </div>`;
 
     return;
 
@@ -903,78 +1109,112 @@ async function loadProducts(){
   list.innerHTML = "";
 
 
-  data.forEach(product => {
+  data.forEach(
+    product => {
 
-    const div =
-      document.createElement("div");
-
-    div.className =
-      "product";
-
-
-    const image =
-      product.image
-      ?
-      `<img src="${product.image}">`
-      :
-      `<div style="
-        width:90px;
-        height:90px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:#08090d;
-        border-radius:10px;
-        color:#555;
-      ">No Image</div>`;
+      const div =
+        document.createElement(
+          "div"
+        );
 
 
-    div.innerHTML = `
+      div.className =
+        "product";
 
-      ${image}
 
-      <div class="product-info">
+      const image =
+        product.image
+        ?
+        `<img
+          class="product-image"
+          src="${escapeAttribute(
+            product.image
+          )}"
+          alt="${escapeAttribute(
+            product.name
+          )}">`
+        :
+        `<div
+          class="product-image"
+          style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#555;
+          ">
+          No Image
+        </div>`;
 
-        <h3>
-          ${escapeHTML(product.name)}
-        </h3>
 
-        <div class="price">
-          Rp ${Number(product.price)
-            .toLocaleString("id-ID")}
+      div.innerHTML = `
+
+        ${image}
+
+        <div class="product-info">
+
+          <div class="product-category">
+            ${escapeHTML(
+              product.category ||
+              "Project"
+            )}
+          </div>
+
+          <div class="product-name">
+            ${escapeHTML(
+              product.name
+            )}
+          </div>
+
+          <div class="product-price">
+            Rp ${Number(
+              product.price || 0
+            ).toLocaleString(
+              "id-ID"
+            )}
+          </div>
+
+          <div class="actions">
+
+            <button
+              class="edit-btn"
+              onclick="editProduct('${escapeAttribute(
+                product.id
+              )}')">
+
+              ✏️ Edit
+
+            </button>
+
+            <button
+              class="delete-btn"
+              onclick="deleteProduct('${escapeAttribute(
+                product.id
+              )}')">
+
+              🗑️ Hapus
+
+            </button>
+
+          </div>
+
         </div>
 
-        <div class="actions">
-
-          <button
-            class="edit"
-            onclick="editProduct('${product.id}')">
-            Edit
-          </button>
-
-          <button
-            class="delete"
-            onclick="deleteProduct('${product.id}')">
-            Hapus
-          </button>
-
-        </div>
-
-      </div>
-
-    `;
+      `;
 
 
-    list.appendChild(div);
+      list.appendChild(
+        div
+      );
 
-  });
+    }
+  );
 
 }
 
 
-/* =================================
-   EDIT PRODUK
-================================= */
+/* =========================================
+   EDIT PRODUCT
+========================================= */
 
 async function editProduct(id){
 
@@ -985,13 +1225,18 @@ async function editProduct(id){
   await supabaseClient
     .from("products")
     .select("*")
-    .eq("id", id)
+    .eq(
+      "id",
+      id
+    )
     .single();
 
 
   if(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
     return;
 
@@ -1003,50 +1248,93 @@ async function editProduct(id){
 
 
   document
-    .getElementById("name")
+    .getElementById(
+      "name"
+    )
     .value =
     data.name || "";
 
 
   document
-    .getElementById("price")
+    .getElementById(
+      "category"
+    )
+    .value =
+    data.category ||
+    "Project";
+
+
+  document
+    .getElementById(
+      "price"
+    )
     .value =
     data.price || "";
 
 
   document
-    .getElementById("description")
+    .getElementById(
+      "description"
+    )
     .value =
     data.description || "";
 
 
   document
-    .getElementById("whatsapp")
+    .getElementById(
+      "whatsapp"
+    )
     .value =
     data.whatsapp ||
     "6285646470358";
 
 
   document
-    .getElementById("formTitle")
+    .getElementById(
+      "formTitle"
+    )
     .innerText =
     "Edit Produk";
 
 
   document
-    .getElementById("saveBtn")
+    .getElementById(
+      "saveBtn"
+    )
     .innerText =
     "UPDATE PRODUK";
 
 
   document
-    .getElementById("cancelBtn")
+    .getElementById(
+      "cancelBtn"
+    )
     .classList
-    .remove("hidden");
+    .remove(
+      "hidden"
+    );
 
 
   oldImagePath =
-    getStoragePath(data.image);
+    getStoragePath(
+      data.image
+    );
+
+
+  if(data.image){
+
+    const preview =
+      document.getElementById(
+        "imagePreview"
+      );
+
+    preview.src =
+      data.image;
+
+    preview.style.display =
+      "block";
+
+  }
 
 
   window.scrollTo({
@@ -1057,19 +1345,19 @@ async function editProduct(id){
 }
 
 
-/* =================================
-   HAPUS PRODUK
-================================= */
+/* =========================================
+   DELETE PRODUCT
+========================================= */
 
 async function deleteProduct(id){
 
-  const confirmDelete =
+  const yes =
     confirm(
       "Yakin ingin menghapus produk ini?"
     );
 
 
-  if(!confirmDelete){
+  if(!yes){
 
     return;
 
@@ -1083,13 +1371,18 @@ async function deleteProduct(id){
   await supabaseClient
     .from("products")
     .select("image")
-    .eq("id", id)
+    .eq(
+      "id",
+      id
+    )
     .single();
 
 
   if(error){
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
     return;
 
@@ -1102,7 +1395,10 @@ async function deleteProduct(id){
   await supabaseClient
     .from("products")
     .delete()
-    .eq("id", id);
+    .eq(
+      "id",
+      id
+    );
 
 
   if(deleteError){
@@ -1116,16 +1412,22 @@ async function deleteProduct(id){
   }
 
 
-  const path =
-    getStoragePath(data.image);
+  const imagePath =
+    getStoragePath(
+      data.image
+    );
 
 
-  if(path){
+  if(imagePath){
 
     await supabaseClient
       .storage
-      .from("product-images")
-      .remove([path]);
+      .from(
+        "product-images"
+      )
+      .remove([
+        imagePath
+      ]);
 
   }
 
@@ -1135,9 +1437,9 @@ async function deleteProduct(id){
 }
 
 
-/* =================================
-   STORAGE PATH
-================================= */
+/* =========================================
+   GET STORAGE PATH
+========================================= */
 
 function getStoragePath(url){
 
@@ -1153,7 +1455,9 @@ function getStoragePath(url){
 
 
   const index =
-    url.indexOf(marker);
+    url.indexOf(
+      marker
+    );
 
 
   if(index === -1){
@@ -1165,73 +1469,111 @@ function getStoragePath(url){
 
   return decodeURIComponent(
     url.substring(
-      index + marker.length
+      index +
+      marker.length
     )
   );
 
 }
 
 
-/* =================================
+/* =========================================
    RESET FORM
-================================= */
+========================================= */
 
 function resetForm(){
 
-  editingId = null;
+  editingId =
+    null;
 
-  oldImagePath = null;
+  oldImagePath =
+    null;
 
 
   document
-    .getElementById("name")
+    .getElementById(
+      "name"
+    )
     .value = "";
 
 
   document
-    .getElementById("price")
+    .getElementById(
+      "category"
+    )
+    .value =
+    "Project";
+
+
+  document
+    .getElementById(
+      "price"
+    )
     .value = "";
 
 
   document
-    .getElementById("description")
+    .getElementById(
+      "description"
+    )
     .value = "";
 
 
   document
-    .getElementById("imageFile")
+    .getElementById(
+      "whatsapp"
+    )
+    .value =
+    "6285646470358";
+
+
+  document
+    .getElementById(
+      "imageFile"
+    )
     .value = "";
 
 
   document
-    .getElementById("imagePreview")
+    .getElementById(
+      "imagePreview"
+    )
     .style
-    .display = "none";
+    .display =
+    "none";
 
 
   document
-    .getElementById("formTitle")
+    .getElementById(
+      "formTitle"
+    )
     .innerText =
     "Tambah Produk";
 
 
   document
-    .getElementById("saveBtn")
+    .getElementById(
+      "saveBtn"
+    )
     .innerText =
     "SIMPAN PRODUK";
 
 
   document
-    .getElementById("cancelBtn")
+    .getElementById(
+      "cancelBtn"
+    )
     .classList
-    .add("hidden");
+    .add(
+      "hidden"
+    );
 
 }
 
 
-/* =================================
+/* =========================================
    CANCEL EDIT
-================================= */
+========================================= */
 
 function cancelEdit(){
 
@@ -1240,11 +1582,14 @@ function cancelEdit(){
 }
 
 
-/* =================================
+/* =========================================
    STATUS
-================================= */
+========================================= */
 
-function showStatus(element, text){
+function showStatus(
+  element,
+  text
+){
 
   element.innerText =
     text;
@@ -1255,19 +1600,50 @@ function showStatus(element, text){
 }
 
 
-/* =================================
-   ESCAPE HTML
-================================= */
+/* =========================================
+   ESCAPE
+========================================= */
 
 function escapeHTML(text){
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.textContent =
     text || "";
 
   return div.innerHTML;
+
+}
+
+
+function escapeAttribute(text){
+
+  return String(
+    text || ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    );
 
 }
 
