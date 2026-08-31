@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DeiraxFn Store - Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#08090d;
+  color:white;
+}
+
+header{
+  padding:20px;
+  background:#101218;
+  border-bottom:1px solid #252832;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#ff2f92;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.logout{
+  background:#252832;
+  color:white;
+  padding:10px 15px;
+  border-radius:8px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:25px 18px;
+}
+
+.login,
+.admin-panel{
+  max-width:600px;
+  margin:40px auto;
+  background:#11141c;
+  border:1px solid #252832;
+  border-radius:18px;
+  padding:25px;
+}
+
+h1{
+  margin-bottom:8px;
+}
+
+.sub{
+  color:#8f95a3;
+  margin-bottom:25px;
+}
+
+label{
+  display:block;
+  margin:16px 0 7px;
+  color:#d5d8df;
+}
+
+input,
+textarea{
+  width:100%;
+  padding:13px;
+  background:#090b10;
+  border:1px solid #30343e;
+  color:white;
+  border-radius:9px;
+  outline:none;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,
+textarea:focus{
+  border-color:#ff2f92;
+}
+
+.main-btn{
+  width:100%;
+  padding:14px;
+  margin-top:20px;
+  border-radius:10px;
+  background:#ff2f92;
+  color:white;
+  font-weight:bold;
+}
+
+.main-btn:hover{
+  opacity:.9;
+}
+
+.preview{
+  width:100%;
+  max-height:300px;
+  object-fit:contain;
+  background:#08090d;
+  border-radius:12px;
+  margin-top:12px;
+  display:none;
+}
+
+.status{
+  margin-top:15px;
+  padding:12px;
+  border-radius:9px;
+  background:#191c24;
+  color:#bbb;
+  display:none;
+}
+
+.products{
+  margin-top:30px;
+}
+
+.product{
+  display:flex;
+  gap:15px;
+  background:#11141c;
+  border:1px solid #252832;
+  padding:15px;
+  border-radius:14px;
+  margin-bottom:12px;
+  align-items:center;
+}
+
+.product img{
+  width:90px;
+  height:90px;
+  object-fit:cover;
+  border-radius:10px;
+  background:#08090d;
+}
+
+.product-info{
+  flex:1;
+}
+
+.product-info h3{
+  margin-bottom:7px;
+}
+
+.price{
+  color:#ff2f92;
+  font-weight:bold;
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.edit{
+  background:#292e39;
+  color:white;
+  padding:8px 12px;
+  border-radius:7px;
+}
+
+.delete{
+  background:#c62828;
+  color:white;
+  padding:8px 12px;
+  border-radius:7px;
+}
+
+.hidden{
+  display:none;
+}
+
+.cancel{
+  background:#292e39;
+  color:white;
+  width:100%;
+  padding:13px;
+  margin-top:8px;
+  border-radius:10px;
+}
+
+@media(max-width:600px){
+
+  header{
+    padding:15px;
+  }
+
+  .product{
+    align-items:flex-start;
+  }
+
+  .product img{
+    width:75px;
+    height:75px;
+  }
+
+  .actions{
+    flex-wrap:wrap;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="logo">
+    Deiraxfn <span>Store</span>
+  </div>
+
+  <button
+    class="logout hidden"
+    id="logoutBtn"
+    onclick="logout()">
+    Logout
+  </button>
+
+</header>
+
+
+<!-- LOGIN -->
+
+<section id="loginSection" class="login">
+
+  <h1>Admin Login</h1>
+
+  <p class="sub">
+    Login untuk mengelola produk DeiraxFn.
+  </p>
+
+  <label>Email</label>
+
+  <input
+    type="email"
+    id="email"
+    placeholder="Email admin">
+
+  <label>Password</label>
+
+  <input
+    type="password"
+    id="password"
+    placeholder="Password">
+
+  <button
+    class="main-btn"
+    onclick="login()">
+    LOGIN
+  </button>
+
+  <div id="loginStatus" class="status"></div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section
+  id="adminSection"
+  class="container hidden">
+
+  <div class="admin-panel">
+
+    <h1 id="formTitle">
+      Tambah Produk
+    </h1>
+
+    <p class="sub">
+      Produk yang disimpan akan otomatis masuk
+      ke katalog.
+    </p>
+
+
+    <label>Nama Produk</label>
+
+    <input
+      type="text"
+      id="name"
+      placeholder="Contoh: FLM Ketaton Cerita Fullpack">
+
+
+    <label>Harga</label>
+
+    <input
+      type="number"
+      id="price"
+      placeholder="20000">
+
+
+    <label>Deskripsi</label>
+
+    <textarea
+      id="description"
+      placeholder="Deskripsi produk..."></textarea>
+
+
+    <label>Nomor WhatsApp</label>
+
+    <input
+      type="text"
+      id="whatsapp"
+      value="6285646470358"
+      placeholder="6285646470358">
+
+
+    <label>Foto Produk</label>
+
+    <input
+      type="file"
+      id="imageFile"
+      accept="image/*"
+      onchange="previewImage()">
+
+    <img
+      id="imagePreview"
+      class="preview">
+
+
+    <button
+      class="main-btn"
+      onclick="saveProduct()"
+      id="saveBtn">
+      SIMPAN PRODUK
+    </button>
+
+    <button
+      class="cancel hidden"
+      onclick="cancelEdit()"
+      id="cancelBtn">
+      BATAL EDIT
+    </button>
+
+    <div
+      id="saveStatus"
+      class="status">
+    </div>
+
+  </div>
+
+
+  <!-- DAFTAR PRODUK -->
+
+  <div class="products">
+
+    <h2>
+      Produk Saya
+    </h2>
+
+    <br>
+
+    <div id="productList">
+      Memuat produk...
+    </div>
+
+  </div>
+
+</section>
+
+
+<script>
+
+/* =================================
+   SUPABASE
+================================= */
+
+const SUPABASE_URL =
+"https://reptktnxppqeltvankgb.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_bFObi9r7_j3CRtnF6eIQBQ_vjlbg3FD";
+
+
+const supabaseClient =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =================================
+   VARIABLE EDIT
+================================= */
+
+let editingId = null;
+let oldImagePath = null;
+
+
+/* =================================
+   LOGIN
+================================= */
+
+async function login(){
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const status =
+    document.getElementById("loginStatus");
+
+  if(!email || !password){
+
+    showStatus(
+      status,
+      "Email dan password wajib diisi."
+    );
+
+    return;
+  }
+
+  showStatus(
+    status,
+    "Sedang login..."
+  );
+
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email:email,
+      password:password
+    });
+
+
+  if(error){
+
+    showStatus(
+      status,
+      "Login gagal: " + error.message
+    );
+
+    return;
+  }
+
+
+  document
+    .getElementById("loginSection")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminSection")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("logoutBtn")
+    .classList.remove("hidden");
+
+
+  loadProducts();
+}
+
+
+/* =================================
+   LOGOUT
+================================= */
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  location.reload();
+
+}
+
+
+/* =================================
+   CEK LOGIN
+================================= */
+
+async function checkUser(){
+
+  const {
+    data:{
+      user
+    }
+  } =
+  await supabaseClient.auth.getUser();
+
+
+  if(user){
+
+    document
+      .getElementById("loginSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminSection")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("logoutBtn")
+      .classList.remove("hidden");
+
+    loadProducts();
+
+  }
+
+}
+
+checkUser();
+
+
+/* =================================
+   PREVIEW FOTO
+================================= */
+
+function previewImage(){
+
+  const file =
+    document.getElementById("imageFile")
+      .files[0];
+
+  const preview =
+    document.getElementById("imagePreview");
+
+
+  if(!file){
+
+    preview.style.display = "none";
+
+    return;
+  }
+
+
+  preview.src =
+    URL.createObjectURL(file);
+
+  preview.style.display =
+    "block";
+
+}
+
+
+/* =================================
+   UPLOAD FOTO
+================================= */
+
+async function uploadImage(file){
+
+  if(!file){
+
+    return null;
+
+  }
+
+
+  const extension =
+    file.name
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+
+  const fileName =
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .substring(2) +
+    "." +
+    extension;
+
+
+  const filePath =
+    fileName;
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .storage
+      .from("product-images")
+      .upload(
+        filePath,
+        file,
+        {
+          cacheControl:"3600",
+          upsert:false
+        }
+      );
+
+
+  if(error){
+
+    throw error;
+
+  }
+
+
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from("product-images")
+      .getPublicUrl(filePath);
+
+
+  return {
+    url:data.publicUrl,
+    path:filePath
+  };
+
+}
+
+
+/* =================================
+   SIMPAN PRODUK
+================================= */
+
+async function saveProduct(){
+
+  const name =
+    document.getElementById("name")
+      .value.trim();
+
+  const price =
+    document.getElementById("price")
+      .value;
+
+  const description =
+    document.getElementById("description")
+      .value.trim();
+
+  const whatsapp =
+    document.getElementById("whatsapp")
+      .value.trim();
+
+  const file =
+    document.getElementById("imageFile")
+      .files[0];
+
+
+  const status =
+    document.getElementById("saveStatus");
+
+  const button =
+    document.getElementById("saveBtn");
+
+
+  if(!name){
+
+    showStatus(
+      status,
+      "Nama produk wajib diisi."
+    );
+
+    return;
+
+  }
+
+
+  if(!price){
+
+    showStatus(
+      status,
+      "Harga wajib diisi."
+    );
+
+    return;
+
+  }
+
+
+  button.disabled = true;
+
+  button.innerText =
+    "MENYIMPAN...";
+
+
+  try{
+
+    let imageUrl = null;
+    let imagePath = null;
+
+
+    /* UPLOAD FOTO BARU */
+
+    if(file){
+
+      const uploaded =
+        await uploadImage(file);
+
+      imageUrl =
+        uploaded.url;
+
+      imagePath =
+        uploaded.path;
+
+    }
+
+
+    /* EDIT */
+
+    if(editingId){
+
+      const updateData = {
+
+        name:name,
+
+        price:Number(price),
+
+        description:description,
+
+        whatsapp:whatsapp
+
+      };
+
+
+      if(imageUrl){
+
+        updateData.image =
+          imageUrl;
+
+      }
+
+
+      const {
+        error
+      } =
+      await supabaseClient
+        .from("products")
+        .update(updateData)
+        .eq("id", editingId);
+
+
+      if(error){
+
+        throw error;
+
+      }
+
+
+      /* HAPUS FOTO LAMA */
+
+      if(imageUrl && oldImagePath){
+
+        await supabaseClient
+          .storage
+          .from("product-images")
+          .remove([
+            oldImagePath
+          ]);
+
+      }
+
+
+      showStatus(
+        status,
+        "Produk berhasil diperbarui! ✅"
+      );
+
+    }
+
+
+    /* PRODUK BARU */
+
+    else{
+
+      const {
+        error
+      } =
+      await supabaseClient
+        .from("products")
+        .insert({
+
+          name:name,
+
+          price:Number(price),
+
+          description:description,
+
+          image:imageUrl,
+
+          whatsapp:
+            whatsapp ||
+            "6285646470358"
+
+        });
+
+
+      if(error){
+
+        throw error;
+
+      }
+
+
+      showStatus(
+        status,
+        "Produk berhasil ditambahkan! ✅"
+      );
+
+    }
+
+
+    resetForm();
+
+    loadProducts();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    showStatus(
+      status,
+      "Gagal: " +
+      error.message
+    );
+
+  }
+
+
+  button.disabled = false;
+
+  button.innerText =
+    "SIMPAN PRODUK";
+
+}
+
+
+/* =================================
+   LOAD PRODUK
+================================= */
+
+async function loadProducts(){
+
+  const list =
+    document.getElementById("productList");
+
+
+  list.innerHTML =
+    "Memuat produk...";
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("*")
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    list.innerHTML =
+      "Gagal memuat: " +
+      error.message;
+
+    return;
+
+  }
+
+
+  if(!data || data.length === 0){
+
+    list.innerHTML =
+      "Belum ada produk.";
+
+    return;
+
+  }
+
+
+  list.innerHTML = "";
+
+
+  data.forEach(product => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "product";
+
+
+    const image =
+      product.image
+      ?
+      `<img src="${product.image}">`
+      :
+      `<div style="
+        width:90px;
+        height:90px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#08090d;
+        border-radius:10px;
+        color:#555;
+      ">No Image</div>`;
+
+
+    div.innerHTML = `
+
+      ${image}
+
+      <div class="product-info">
+
+        <h3>
+          ${escapeHTML(product.name)}
+        </h3>
+
+        <div class="price">
+          Rp ${Number(product.price)
+            .toLocaleString("id-ID")}
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="edit"
+            onclick="editProduct('${product.id}')">
+            Edit
+          </button>
+
+          <button
+            class="delete"
+            onclick="deleteProduct('${product.id}')">
+            Hapus
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* =================================
+   EDIT PRODUK
+================================= */
+
+async function editProduct(id){
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+
+  if(error){
+
+    alert(error.message);
+
+    return;
+
+  }
+
+
+  editingId =
+    data.id;
+
+
+  document
+    .getElementById("name")
+    .value =
+    data.name || "";
+
+
+  document
+    .getElementById("price")
+    .value =
+    data.price || "";
+
+
+  document
+    .getElementById("description")
+    .value =
+    data.description || "";
+
+
+  document
+    .getElementById("whatsapp")
+    .value =
+    data.whatsapp ||
+    "6285646470358";
+
+
+  document
+    .getElementById("formTitle")
+    .innerText =
+    "Edit Produk";
+
+
+  document
+    .getElementById("saveBtn")
+    .innerText =
+    "UPDATE PRODUK";
+
+
+  document
+    .getElementById("cancelBtn")
+    .classList
+    .remove("hidden");
+
+
+  oldImagePath =
+    getStoragePath(data.image);
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =================================
+   HAPUS PRODUK
+================================= */
+
+async function deleteProduct(id){
+
+  const confirmDelete =
+    confirm(
+      "Yakin ingin menghapus produk ini?"
+    );
+
+
+  if(!confirmDelete){
+
+    return;
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("products")
+    .select("image")
+    .eq("id", id)
+    .single();
+
+
+  if(error){
+
+    alert(error.message);
+
+    return;
+
+  }
+
+
+  const {
+    error:deleteError
+  } =
+  await supabaseClient
+    .from("products")
+    .delete()
+    .eq("id", id);
+
+
+  if(deleteError){
+
+    alert(
+      deleteError.message
+    );
+
+    return;
+
+  }
+
+
+  const path =
+    getStoragePath(data.image);
+
+
+  if(path){
+
+    await supabaseClient
+      .storage
+      .from("product-images")
+      .remove([path]);
+
+  }
+
+
+  loadProducts();
+
+}
+
+
+/* =================================
+   STORAGE PATH
+================================= */
+
+function getStoragePath(url){
+
+  if(!url){
+
+    return null;
+
+  }
+
+
+  const marker =
+    "/product-images/";
+
+
+  const index =
+    url.indexOf(marker);
+
+
+  if(index === -1){
+
+    return null;
+
+  }
+
+
+  return decodeURIComponent(
+    url.substring(
+      index + marker.length
+    )
+  );
+
+}
+
+
+/* =================================
+   RESET FORM
+================================= */
+
+function resetForm(){
+
+  editingId = null;
+
+  oldImagePath = null;
+
+
+  document
+    .getElementById("name")
+    .value = "";
+
+
+  document
+    .getElementById("price")
+    .value = "";
+
+
+  document
+    .getElementById("description")
+    .value = "";
+
+
+  document
+    .getElementById("imageFile")
+    .value = "";
+
+
+  document
+    .getElementById("imagePreview")
+    .style
+    .display = "none";
+
+
+  document
+    .getElementById("formTitle")
+    .innerText =
+    "Tambah Produk";
+
+
+  document
+    .getElementById("saveBtn")
+    .innerText =
+    "SIMPAN PRODUK";
+
+
+  document
+    .getElementById("cancelBtn")
+    .classList
+    .add("hidden");
+
+}
+
+
+/* =================================
+   CANCEL EDIT
+================================= */
+
+function cancelEdit(){
+
+  resetForm();
+
+}
+
+
+/* =================================
+   STATUS
+================================= */
+
+function showStatus(element, text){
+
+  element.innerText =
+    text;
+
+  element.style.display =
+    "block";
+
+}
+
+
+/* =================================
+   ESCAPE HTML
+================================= */
+
+function escapeHTML(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text || "";
+
+  return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
